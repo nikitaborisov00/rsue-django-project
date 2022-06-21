@@ -1,0 +1,79 @@
+/*YOUR CUSTOM STYLES*/
+
+@media print {
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        line-height: normal;
+        hyphens: auto;
+    }
+    .table {
+        font-size: 10pt;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        page-break-after: avoid;
+    }
+    .table td {
+        padding: 0 4px;
+        font-weight: normal;
+
+    }
+    .table th {
+        font-weight: normal;
+    }
+    .col_1 {
+        width: 1.15in;
+        min-width: 1.15in;
+        max-width: 1.15in;
+    }
+    .col_2 {
+        width: 1.11in;
+        min-width: 1.11in;
+        max-width: 1.11in;
+    }
+    .col_3 {
+        width: 1.13in;
+        min-width: 1.13in;
+        max-width: 1.13in;
+    }
+    .col_4 {
+        width: 1.55in;
+        min-width: 1.55in;
+        max-width: 1.55in;
+    }
+    .col_5 {
+        width: 1.55in;
+        min-width: 1.55in;
+        max-width: 1.55in;
+    }
+
+    .col_01 {
+        width: 0.7in;
+        min-width: 0.7in;
+        max-width: 0.7in;
+    }
+    .col_02{
+        width: 1.2in;
+        min-width: 1.2in;
+        max-width: 1.2in;
+    }
+    .col_03{
+        width: 0.9in;
+        min-width: 0.9in;
+        max-width: 0.9in;
+    }
+    .col_04{
+        width: 0.9in;
+        min-width: 0.9in;
+        max-width: 0.9in;
+    }
+    .col_05{
+        width: 0.9in;
+        min-width: 0.9in;
+        max-width: 0.9in;
+    }
+    .col_06{
+        width: 2.49in;
+        min-width: 2.49in;
+        max-width: 2.49in;
+    }
+}

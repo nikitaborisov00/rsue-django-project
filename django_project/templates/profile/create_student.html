@@ -1,0 +1,46 @@
+{% extends 'profile/layout.html' %}
+
+{% block content %}
+    <div class="conatiner-fluid content-inner mt-n5 py-0">
+        <div>
+            <div class="row">
+                <div class="content-inner mt-n5 py-0">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="header-title">
+                                <h4 class="card-title">Cоздание студента</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p>Здравствуйте, {{ user.get_full_name }}, вы попали на форму создания студента и присвоение ему группы, что бы создать студента, пожалуйста заполните все поля!</p>
+                            <form class="form-horizontal" method="post">
+                                {% csrf_token %}
+                                {{ forms.error }}
+                                <div class="form-group row">
+                                    <div class="col-sm-9">
+                                        <input type="hidden" class="form-control" name="teacher" id="exampleInputNumber1" value="{{ user.pk }}">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-3 align-self-center mb-0" for="email1">Ф.И.О</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="email1" name="full_name" placeholder="Фамилия Имя Отчество">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-3 align-self-center mb-0" for="email1">Выберите группу</label>
+                                    <div class="col-sm-9">
+                                        {{ form.key }}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Создать</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

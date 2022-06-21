@@ -1,0 +1,25 @@
+{% extends 'profile/layout.html' %}
+
+{% block content %}
+    <div class="conatiner-fluid content-inner mt-n5 py-0">
+        <div>
+            <div class="row">
+                <div class="content-inner mt-n5 py-0">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="header-title">
+                                <h4 class="card-title">Выбор групп студентов</h4>
+                            </div>
+                        </div>
+                        <p>Здравствуйте, {{ user.get_full_name }}, вы попали на форму выбора учебных групп.</p>
+                        <form class="form-horizontal" method="post">
+                            {% csrf_token %}
+                            {{ form }}
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

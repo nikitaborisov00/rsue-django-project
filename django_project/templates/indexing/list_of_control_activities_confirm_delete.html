@@ -1,0 +1,25 @@
+{% extends 'profile/layout.html' %}
+
+{% block content %}
+    <div class="conatiner-fluid content-inner mt-n5 py-0">
+        <div>
+            <div class="row">
+                <div class="content-inner mt-n5 py-0">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="header-title">
+                                <h4 class="card-title">Удаление ЛКМ</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form method="post">{% csrf_token %}
+                                <p>Вы действительно хотите удалить "{{ object }}"?</p>
+                                <button type="submit" class="btn btn-primary" value="Удалить">Удалить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

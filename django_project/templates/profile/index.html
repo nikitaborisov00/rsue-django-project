@@ -1,0 +1,112 @@
+{% extends 'profile/layout.html' %}
+{% block content %}
+    <div class="conatiner-fluid content-inner mt-n5 py-0">
+        <div class="row">
+            <div class="col-lg">
+                <div class="card">
+                    <div class="d-flex justify-content-between">
+                        <div class="header-title card-body">
+                            <a href="{% url 'Index:table-list' %}"><img src="/static/assets/images/shapes/01.png" width="25" height="25"></a>
+                            <a class="text-secondary" href="{% url 'Index:lca-create' %}"><b>Создать ЛКМ</b></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg">
+                <div class="card">
+                    <div class="header-title card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a href="{% url 'Index:table-list' %}"><img src="/static/assets/images/shapes/01.png" width="25" height="25"></a>
+                                <a class="text-secondary " href="{% url 'Index:table-list' %}"><b>Просмотр ЛКМ</b></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        <div class="row">
+            <div class="col-lg">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a href="{% url 'Index:table-list' %}"><img src="/static/assets/images/shapes/06.png" width="25" height="25"></a>
+                                <a class="text-secondary " href="{% url 'Index:gradeservice-create' %}"><b>Создать оценочное средство</b></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a href="{% url 'Index:table-list' %}"><img src="/static/assets/images/shapes/06.png" width="25" height="25"></a>
+                                <a class="text-secondary " href="{% url 'Index:formholding-create' %}"><b>Создать форму проведения</b></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a href="{% url 'Index:table-list' %}"><img src="/static/assets/images/shapes/06.png" width="25" height="25"></a>
+                                <a class="text-secondary " href="{% url 'Index:orderholding-create' %}"><b>Создать порядок проведения</b></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a href="{% url 'Index:table-list' %}"><img src="/static/assets/images/shapes/04.png" width="25" height="25"></a>
+                                <a class="text-secondary " href="{% url 'Index:student-groups' %}"><b>Создать группу</b></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a href="{% url 'Index:table-list' %}"><img src="/static/assets/images/shapes/04.png" width="25" height="25"></a>
+                                <a class="text-secondary " href="{% url 'Index:student-groups' %}"><b>Список групп</b></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a href="{% url 'Index:table-list' %}"><img src="/static/assets/images/shapes/04.png" width="25" height="25"></a>
+                                <a class="text-secondary " href="{% url 'Index:student' %}"><b>Создать студента</b></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

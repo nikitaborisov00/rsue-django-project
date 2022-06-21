@@ -1,0 +1,199 @@
+{% extends 'profile/layout.html' %}
+
+{% block aside_style %}
+    sidebar-mini
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+{% with lca=list_of_control_activities %}
+    <div class="conatiner-fluid mt-n5 py-0">
+        <div>
+            <div class="row">
+                <div class="mt-n5 py-0">
+                    <div class="card overflow-scroll">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="header-title">
+                                <h4 class="card-title">Лист контрольных мероприятий</h4>
+                                <a href="{% url 'Index:gss-create' lca.id %}">Добавить оценочные средства</a> |
+                                <a href="{% url 'Index:lca-print' lca.id %}" target="_blank">Печатать ЛКМ</a> | 
+                                <a href="{% url 'Index:performance' lca.id %}" target="_blank">Печатать таблицу успеваемости</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <input id="lca_id" type="hidden" value="{{ lca.id }}">
+                            {% with checkpoints=lca.lca_checkpoints.all %}
+                            <table class="table table-bordered table-sm">
+                                <tr>
+                                    <td rowspan="3">
+                                        Студент
+                                    </td>
+                                    {% for cp in checkpoints %}
+                                        {% for gss in cp.gradeserviceset_set.all %}
+                                            <td class="p-0 text-center" colspan="{{ gss.evaluation_quantity }}">
+                                                КТ {{ cp.number }} - {{ cp.date }}
+                                            </td>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    {% for cp in checkpoints %}
+                                        {% for gss in cp.gradeserviceset_set.all %}
+                                            <td class="p-0 text-center" colspan="{{ gss.evaluation_quantity }}">
+                                                {{ gss.grade_service }}
+                                            </td>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    {% for cp in checkpoints %}
+                                        {% for gss in cp.gradeserviceset_set.all %}
+                                            {% for item in gss.lca_grade_items.all %}
+                                                <td class="p-0 text-center">
+                                                    <input type="date" class="form-control p-0" value="{{ item.date|date:'Y-m-d' }}" id="item_{{ item.id }}" onchange="changeDate(this)">
+                                                </td>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                </tr>
+                                {% for student in lca.group.students_set.all %}
+                                    <tr>
+                                        <td>
+                                            {{ student.full_name }}
+                                        </td>
+
+                                        {% for cp in checkpoints %}
+                                            {% for gss in cp.gradeserviceset_set.all %}
+                                                {% for item in gss.lca_grade_items.all %}
+                                                    <td class="p-0 text-center">
+                                                        <input type="text" class="form-control" id="gr_{{ student.id }}_{{ item.id }}" onchange="updateRate(this)">
+                                                    </td>
+                                                {% endfor %}
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            {% endwith %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body" id="toast-message">
+            </div>
+        </div>
+    </div>
+
+{% endwith %}
+{% endblock %}
+
+{% block js %}
+<script>
+    const url = new URL(document.documentURI);
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const lca_id = document.getElementById('lca_id').value;
+
+    const toastElement = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+
+    let results = {};
+
+    window.onload = refreshData();
+    
+    function showError() {
+        const toast = new bootstrap.Toast(toastElement, {delay: 5000});
+        toastElement.className = 'toast text-white bg-danger';
+        toastMessage.innerText = "Ошибка при сохранении!";
+        toast.show();
+    }
+    
+    function showSuccess() {
+        const toast = new bootstrap.Toast(toastElement, {delay: 700});
+        toastElement.className = 'toast';
+        toastMessage.innerText = "Сохранено";
+        toast.show();
+    }
+
+    function changeDate(changedItem) {
+        let date_value = changedItem.value == '' ? null : changedItem.value;
+        let pk = changedItem.id.match(/\d+/);
+        let APIUrl = url.origin + `/gradeitems/${pk}/update`;
+        let response = fetch(APIUrl, {
+            method: 'PUT',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({'date': date_value})
+        })
+            .then(response => showSuccess())
+            .catch(error => showError());
+    }
+
+    async function updateRate(changedItem) {
+        let rate_score = changedItem.value;
+        let student_id = changedItem.id.match(/\d+/)[0];
+        let item_id = changedItem.id.match(/\d+/g)[1];
+
+        if(rate_score=='') { 
+            for (let gradeResult of results) {
+                if (item_id==gradeResult['grade_item'] && student_id==gradeResult['student']) {
+                    let APIUrl = url.origin + `/lca/${lca_id}/graderesult/${gradeResult['id']}`;
+                    let response = fetch(APIUrl, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRFToken': csrftoken
+                        }
+                    })
+                        .then(response => showSuccess())
+                        .catch(error => showError());
+                }
+            }
+        } else {
+            let APIUrl = url.origin + `/lca/${lca_id}/graderesult/`;
+            let response = fetch(APIUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    'score': rate_score,
+                    'student': student_id,
+                    'grade_item': item_id
+                })
+            })
+                .then(response => showSuccess())
+                .catch(error => showError());
+            refreshData();
+        }
+    }
+
+    async function refreshData() {
+        let APIUrl = url.origin + `/lca/${lca_id}/graderesult/`;
+        let response = await fetch(APIUrl, {
+            method: 'GET',
+        });
+        if (response.ok) {
+            results = await response.json();
+            for (let gradeResult of results) {
+                let grade_score = gradeResult['score'];
+                let grade_item = gradeResult['grade_item'];
+                let student_id = gradeResult['student'];
+
+                let elem_id = `gr_${student_id}_${grade_item}`;
+                let elem = document.getElementById(elem_id);
+                elem.value = grade_score;
+            }
+        } else {
+            errors = await response.text();
+            console.log(errors);
+        }
+    }
+</script>
+{% endblock %}

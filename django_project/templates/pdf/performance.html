@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Лист контрольных мероприятий</title>
+</head>
+<body style="background-color: #525659;">
+{% with lca=list_of_control_activities %}
+<div class="container" style="background-color: white;">
+    <h5 style="text-align: center" class="mb-3">Форма успеваемости</h5>
+    <p class="mb-0">Группа: <span class="text-decoration-underline" style="font-weight: bold;">{{ lca.group.title }}</span></p>
+    <input type="hidden" id="lca_id" value="{{ lca.id }}">
+    {% with checkpoints=lca.lca_checkpoints.all %}
+    <table class="table table-bordered table-sm">
+        <tr>
+            <td rowspan="3">
+                Студент
+            </td>
+            {% for cp in checkpoints %}
+                {% for gss in cp.gradeserviceset_set.all %}
+                    <td class="p-0 text-center" colspan="{{ gss.evaluation_quantity }}">
+                        КТ {{ cp.number }} - {{ cp.date }}
+                    </td>
+                {% endfor %}
+                <td class="text-center" rowspan="3" id="cp_{{ cp.id }}">
+                    КТ {{ cp.number }}
+                </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for cp in checkpoints %}
+                {% for gss in cp.gradeserviceset_set.all %}
+                    <td class="p-0 text-center" colspan="{{ gss.evaluation_quantity }}">
+                        {{ gss.grade_service }}
+                    </td>
+                {% endfor %}
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for cp in checkpoints %}
+                {% for gss in cp.gradeserviceset_set.all %}
+                    {% for item in gss.lca_grade_items.all %}
+                        <td class="p-0 text-center">
+                            {{ item.date|date:'d-m' }}
+                        </td>
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+        </tr>
+        {% for student in lca.group.students_set.all %}
+            <tr>
+                <td id="st_{{ student.id }}">
+                    {{ student.full_name }}
+                </td>
+
+                {% for cp in checkpoints %}
+                    {% for gss in cp.gradeserviceset_set.all %}
+                        {% for item in gss.lca_grade_items.all %}
+                            <td class="text-center">
+                                <span id="gr_{{ student.id }}_{{ item.id }}"></span>
+                            </td>
+                        {% endfor %}
+                    {% endfor %}
+                    <td class="text-center">
+                        <span id="res_{{ student.id }}_{{ cp.id }}"></span>
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    {% endwith %}
+</div>
+{% endwith %}
+</body>
+<script>
+    const url = new URL(document.documentURI);
+    const lca_id = document.getElementById('lca_id').value;
+
+    let results = {};
+    
+    window.onload = async function() {
+        let APIUrl = url.origin + `/lca/${lca_id}/graderesult/`;
+        let response = await fetch(APIUrl, {
+            method: 'GET',
+        });
+        if (response.ok) {
+            results = await response.json();
+            for (let gradeResult of results) {
+                let grade_score = gradeResult['score'];
+                let grade_item = gradeResult['grade_item'];
+                let student_id = gradeResult['student'];
+
+                let elem_id = `gr_${student_id}_${grade_item}`;
+                let elem = document.getElementById(elem_id);
+                elem.innerText = grade_score;
+            }
+        } else {
+            errors = await response.text();
+            console.log(errors);
+        }
+
+        APIUrl = url.origin + `/lca/${lca_id}/result`;
+        response = await fetch(APIUrl, {
+            method: 'GET',
+        });
+        if (response.ok) {
+            results = await response.json();
+            for (let gradeResult of results) {
+                let grade_score = gradeResult['result'];
+                let grade_item = gradeResult['grade_item__grade_service_set__check_point'];
+                let student_id = gradeResult['student_id'];
+
+                let elem_id = `res_${student_id}_${grade_item}`;
+                let elem = document.getElementById(elem_id);
+                elem.innerText = grade_score;
+            }
+        } else {
+            errors = await response.text();
+            console.log(errors);
+        }
+
+    }
+</script>
+</html>

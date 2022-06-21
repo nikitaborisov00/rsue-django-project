@@ -1,0 +1,28 @@
+{% extends 'profile/layout.html' %}
+
+{% block content %}
+    <div class="conatiner-fluid content-inner mt-n5 py-0">
+        <div>
+            <div class="row">
+                <div class="content-inner mt-n5 py-0">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <div class="header-title">
+                                <h4 class="card-title">Группы</h4>
+                                <p class="text-dark"><b>Выберите группу, чтобы добавить её</b></p>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            {% for group in studentgroup_list %}
+                            <a href="{% url 'Index:group-update' group.id %}">
+                                <p>{{ group }}</p>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

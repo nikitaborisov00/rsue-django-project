@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=90%, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="/static/css/mystyles.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Лист контрольных мероприятий</title>
+</head>
+<body style="background-color: #525659;">
+{% with lca=list_of_control_activities %}
+<div class="container" style="background-color: white">
+    <p style="text-align: end" class="mb-0">УТВЕРЖДАЮ:</p>
+    <p style="text-align: end" class="mb-0">Декан факультета</p>
+    <p style="text-align: end" class="mb-0">{{ lca.faculty }}</p>
+    <p style="text-align: end" class="mb-0">{{ lca.dean }}</p>
+    <p style="text-align: end" class="mb-0">{{ lca.date_of_approval }}</p>
+
+    <h5 style="text-align: center" class="mb-3">ЛИСТ КОНТРОЛЬНЫХ МЕРОПРИЯТИЙ</h5>
+    <p class="mb-0">Кафедра: <span class="text-decoration-underline" style="font-weight: bold;">{{ lca.department }}</span></p>
+    <p class="mb-0">Дисциплина <span class="text-decoration-underline" style="font-weight: bold;">«{{ lca.discipline }}»</span></p>
+    <p class="mb-0">Для учебной группы: <span class="text-decoration-underline" style="font-weight: bold;">{{ lca.group.title }}</span></p>
+    <p class="mb-0"><span class="text-decoration-underline" style="font-weight: bold;">Курс {{ lca.course }} Семестр {{ lca.semester }}</span></p>
+    <p class="mb-0"><span class="text-decoration-underline" style="font-weight: bold;">Текущая аттестация</span> по дисциплине проводится с помощью следующих оценочных средств:</p>
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th class="col_1" style="text-align: center">Оценочные средства (указываются в соответствии с ФОСом)</th>
+                <th class="col_2" style="text-align: center">Форма проведения</th>
+                <th class="col_3" style="text-align: center">Порядок проведения</th>
+                <th class="col_4" style="text-align: center">Шкала оценивания (в сумме по всем видам оценочных средств 100 баллов)</th>
+                <th class="col_5" style="text-align: center">Критерии оценивания</th>
+            </tr>
+            {% for cp in lca.lca_checkpoints.all %}
+                <tr>
+                    <td colspan="5">
+                        <table class="table mb-0">
+                            <p class="text-center mb-0"><b>Контрольная точка {{ cp.number }} - {{ cp.date }}</b></p>
+                        </table>
+                    </td>
+                </tr>
+                {% for gss in cp.gradeserviceset_set.all %}
+                    <tr>
+                        <td class="col_1">{{ gss.grade_service }}</td>
+                        <td class="col_2">{{ gss.form_holding }}</td>
+                        <td class="col_3">{{ gss.order_holding }}</td>
+                        <td class="col_4">{{ gss.evaluation_scale }}</td>
+                        <td class="col_5">{{ gss.evaluation_criteria }}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="container" style="background-color: white;">
+    <p class="mb-0"><span class="text-decoration-underline" style="font-weight: bold;">Промежуточная аттестация по дисциплине проводится в виде:</span></p>
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th class="col_01" style="text-align: center";>Вид ПА</th>
+                <th class="col_02" style="text-align: center">График проведения</th>
+                <th class="col_03" style="text-align: center">Форма проведения</th>
+                <th class="col_04" style="text-align: center">Порядок проведения</th>
+                <th class="col_05" style="text-align: center">Шкала оценивания</th>
+                <th class="col_06" style="text-align: center">Критерии оценивания</th>
+            </tr>
+
+                <tr>
+                    <td class="col_01">{{ lca.name_pa }}</td>
+                    <td class="col_02">в соответствии с расписанием</td>
+                    <td class="col_03">письменно-устно</td>
+                    <td class="col_04">{{ lca.order_holding_pa }}</td>
+                    <td class="col_05">{{ lca.evaluation_scale_pa }}</td>
+                    <td>{{ lca.evaluation_criteria_pa }}</td>
+                </tr>
+
+        </tbody>
+    </table>
+    <table class="table border-white">
+        <thead>
+            <tr>
+                <td>Зав. кафедрой</td>
+                <td>_____________</td>
+                <td>Щербаков С.М.</td>
+            </tr>
+            <tr>
+                <td>Преподаватель</td>
+                <td>_____________</td>
+                <td>{{ user.get_full_name }}</td>
+            </tr>
+        </thead>
+    </table>
+</div>
+{% endwith %}
+<!-- Optional JavaScript; choose one of the two! -->
+
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<!-- Option 2: Separate Popper and Bootstrap JS -->
+<!--
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+-->
+</body>
+</html>
